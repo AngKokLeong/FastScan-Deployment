@@ -1,3 +1,4 @@
-import streamlit as st
+from streamlit_setup import StreamlitUserInterface
 
 
+StreamlitUserInterface.setup_web_user_interface()
