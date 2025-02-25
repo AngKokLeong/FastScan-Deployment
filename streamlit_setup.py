@@ -8,6 +8,7 @@ from ultralytics.utils.checks import check_requirements
 class StreamlitUserInterface:
 
     def __init__(self, **kwargs: Any):
+
         check_requirements("streamlit>=1.29.0")
         import streamlit as st
         from ultralytics import YOLO
@@ -94,9 +95,6 @@ class StreamlitUserInterface:
 
             self.model = self.yolo(f"best.pt")
             #class_names = list(self.model.names.values())
-
-        self.yolo_settings.update({"run_dir": "runs"})
-
 
 
     def start_inference(self):
