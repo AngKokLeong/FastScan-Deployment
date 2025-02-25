@@ -77,8 +77,7 @@ class StreamlitUserInterface:
         self.confidence_threshold = float(self.st.sidebar.slider("Confidence Threshold", 0.0, 1.0, self.confidence_threshold, 0.01))
         self.iou = float(self.st.sidebar.slider("IoU Threshold", 0.0, 1.0, self.iou, 0.01))
 
-        col1 = self.st.columns(1)
-        self.ann_frame = col1.empty()
+        self.ann_frame = self.st.empty()
 
     
     def configure(self):
