@@ -1,4 +1,6 @@
 from streamlit_setup import StreamlitUserInterface
 
 
-StreamlitUserInterface.setup_web_user_interface()
+stream_lit = StreamlitUserInterface()
+
+stream_lit.setup_web_user_interface()
