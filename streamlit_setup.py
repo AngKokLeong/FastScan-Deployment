@@ -1,17 +1,24 @@
 from typing import Any
 
-from ultralytics import YOLO
+
 from ultralytics.utils import LOGGER
 from ultralytics.utils.checks import check_requirements
-import cv2
+
 
 class StreamlitUserInterface:
 
     def __init__(self, **kwargs: Any):
         check_requirements("streamlit>=1.29.0")
         import streamlit as st
+        from ultralytics import YOLO
+        from ultralytics import settings
+        import cv2
 
         self.st = st
+        self.yolo = YOLO
+        self.cv2 = cv2
+        self.yolo_settings = settings
+
         self.model = None
 
         self.confidence_threshold = 0.25
@@ -30,27 +37,27 @@ class StreamlitUserInterface:
         menu_style_cfg = """<style>MainMenu {visibility: hidden;} </style>"""
 
         main_title_cfg = """
-            <div>
-                <h1 style="color:#FF64DA; text-align:center; 
-                            font-size:40px; 
-                            margin-top:-50px;
-                            font-family: 'Archivo', san-serif; margin-bottom:20px;"
-                >
-                    Shopping Checkout System
-                </h1>
+                        <div>
+                            <h1 style="color:#FF64DA; text-align:center; 
+                                        font-size:40px; 
+                                        margin-top:-50px;
+                                        font-family: 'Archivo', san-serif; margin-bottom:20px;"
+                            >
+                                FastScan
+                            </h1>
 
-            </div>
+                        </div>
                         """
 
 
         sub_title_cfg = """
 
             <div>
-                <h4 style="color:#042AFF; 
-                            text-align:center; 
+                <h4 style="color: #042AFF; 
+                            text-align: center; 
                             font-family: 'Archivo', sans-serif;
                             margin-top:-15px;
-                            margin-bottom: 50px;">
+                            margin-bottom: 50px;" >
                 
                     Simple Prototype of Shopping Checkout using Object Detection
                 </h4>
@@ -85,9 +92,10 @@ class StreamlitUserInterface:
 
         with self.st.spinner("Model is loading..."):
 
-            self.model = YOLO(f"best.pt")
+            self.model = self.yolo(f"best.pt")
             #class_names = list(self.model.names.values())
 
+        self.yolo_settings.update({"run_dir": "runs"})
 
 
 
@@ -106,7 +114,7 @@ class StreamlitUserInterface:
         if self.st.sidebar.button("Start"):
             stop_button = self.st.button("Stop")
 
-            opencv_video_capture_object = cv2.VideoCapture(0)
+            opencv_video_capture_object = self.cv2.VideoCapture(0)
 
             if not opencv_video_capture_object.isOpened():
                 self.st.error("Unable to open webcam")
@@ -135,5 +143,5 @@ class StreamlitUserInterface:
                 self.ann_frame.image(annotated_frame, channels="BGR")
         
             opencv_video_capture_object.release()
-        cv2.destroyAllWindows()
+        self.cv2.destroyAllWindows()
         
