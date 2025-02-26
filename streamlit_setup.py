@@ -35,6 +35,11 @@ class StreamlitUserInterface:
 
         # Refer to https://github.com/ultralytics/ultralytics/blob/main/ultralytics/solutions/streamlit_inference.py
 
+        self.st.set_page_config(
+            page_title="FastScan Prototype",
+            layout="wide"   
+        )
+
         menu_style_cfg = """<style>MainMenu {visibility: hidden;} </style>"""
 
         main_title_cfg = """
@@ -58,7 +63,8 @@ class StreamlitUserInterface:
                             text-align: center; 
                             font-family: 'Archivo', sans-serif;
                             margin-top:-15px;
-                            margin-bottom: 50px;" >
+                            margin-bottom: 50px;"
+                >
                 
                     Simple Prototype of Shopping Checkout using Object Detection
                 </h4>
@@ -66,10 +72,7 @@ class StreamlitUserInterface:
 
                         """        
 
-        self.st.set_page_config(
-            page_title="FastScan Prototype",
-            layout="wide"   
-        )
+
 
         self.st.markdown(menu_style_cfg, unsafe_allow_html=True)
         self.st.markdown(main_title_cfg, unsafe_allow_html=True)
@@ -85,7 +88,15 @@ class StreamlitUserInterface:
         self.confidence_threshold = float(self.st.sidebar.slider("Confidence Threshold", 0.0, 1.0, self.confidence_threshold, 0.01))
         self.iou = float(self.st.sidebar.slider("IoU Threshold", 0.0, 1.0, self.iou, 0.01))
 
-        self.ann_frame = self.st.empty()
+
+        heading_col1, heading_col2, heading_col3 = self.st.columns([0.01, 0.50, 0.49])   
+
+
+        col1, col2, col3 = self.st.columns([0.01, 0.50, 0.49])   
+
+        self.ann_frame = col2.empty()
+        self.checkout_window = col3.empty()
+        heading_col3.text("Cart")
 
     
     def configure(self):
@@ -127,6 +138,8 @@ class StreamlitUserInterface:
                 if self.enable_track == "Yes":
                     results = self.model.track(frame, conf=self.confidence_threshold, iou=self.iou, persist=True)
                     results[0].names = shopping_item_dict
+                    self.checkout_window.text(results[0].verbose())
+                    
                 else:
                     results = self.model(frame, conf=self.confidence_threshold, iou=self.iou)
                     results[0].names = shopping_item_dict
